@@ -1,6 +1,8 @@
 import pyshark
 from console import getTerminalSize
 from os import system
+import re
+from posixpath import basename
 
 #définition des variables
 sizex, sizey = getTerminalSize()
@@ -35,10 +37,8 @@ for packet in capture:
 
                 # get the sample rate from the message header :
                 header = packet.sip.msg_hdr
-                start = header.index('telephone-event/')+16
-                end = start
-                while header[end].isdigit():end += 1
-                fs=int(header[start:end])
+                fs = basename(re.search(r"telephone-event/([0-9])\w+", header).group())
+
                 #assert fs==8000
                 # the codec must be G.711, else the rest won't work
                 assert int(packet.sip._all_fields['sdp.media'].split(" ")[4])==0,'Unknown codec.'
