@@ -1,7 +1,7 @@
 import pyshark
 
 rtp_list = []
-cap = pyshark.FileCapture('forensic.pcap', display_filter='rtp and ip.src==172.25.105.3')
+cap = pyshark.FileCapture('forensic.pcap', display_filter='rtp and ip.src==172.25.105.40')
 raw_audio = open('my_audio2.g711u','wb')
 for i in cap:
     try:
