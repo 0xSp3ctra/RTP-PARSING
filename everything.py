@@ -2,7 +2,7 @@ import pyshark
 from console import getTerminalSize
 from os import system
 import re
-# from posixpath import basename
+from posixpath import basename
 
 #définition des variables
 sizex, sizey = getTerminalSize()
@@ -19,7 +19,7 @@ def fill():
     else:
         RTPs2.append(b'')
 
-capture = pyshark.FileCapture('voip.pcap', display_filter='sip or rtp')
+capture = pyshark.FileCapture('forensic.pcap', display_filter='sip or rtp')
 
 print('\n'*(m//2-1))
 
@@ -37,15 +37,15 @@ for packet in capture:
 
                 # get the sample rate from the message header :
                 header = packet.sip.msg_hdr
-                # fs = basename(re.search(r"telephone-event/([0-9])\w+", header).group())
-                fs = re.sub(".*/", "", header).split()[0]
-
+                fs = basename(re.search(r"telephone-event/([0-9])\w+", header).group())
+                # fs = re.sub(".*/", "", header).split()[0]
+                print(fs)
 
                 #assert fs==8000
                 # the codec must be G.711, else the rest won't work
                 assert int(packet.sip._all_fields['sdp.media'].split(" ")[4])==0,'Unknown codec.'
 
-            #rrécupération du call ID dans le paquet BYE
+            #récupération du call ID dans le paquet BYE
             elif packet.sip.Method == 'BYE':
                 CID = packet.sip.call_id_generated
                 print('\n'*(m//2)+'Call ended.\nCID '+CID)
