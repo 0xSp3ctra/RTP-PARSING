@@ -1,9 +1,7 @@
 from scapy.all import *
 from scapy.layers.inet import IP, TCP, UDP
 
-fichier = rdpcap("interception.pcapng")
-
-pkts = sniff(offline="interception.pcapng")
+pkts = sniff(offline="forensic.pcap")
 pkts[0].show()
 
 for pkt in pkts:
