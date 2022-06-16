@@ -1,8 +1,7 @@
 import pyshark
 from console import getTerminalSize
 from os import system
-import re
-from posixpath import basename
+from re import sub, search
 
 #définition des variables
 sizex, sizey = getTerminalSize()
