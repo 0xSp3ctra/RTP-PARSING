@@ -36,8 +36,8 @@ for packet in capture:
 
                 # get the sample rate from the message header :
                 header = packet.sip.msg_hdr
-                fs = re.search(r"telephone-event/([0-9])\w+", header).group()
-                fs = re.sub(".*/", "", fs)
+                fs = search(r"telephone-event/([0-9])\w+", header).group()
+                fs = sub(".*/", "", fs)
 
                 #assert fs==8000
                 # the codec must be G.711, else the rest won't work
