@@ -7,3 +7,6 @@ header='Via: SIP/2.0/UDP 172.25.105.3:43204;branch=z9hG4bK-d8754z-188e560b22cd11
 res = re.search(r"telephone-event/([0-9])\w+", header).group()
 res = re.sub(".*/", "", res)
 print(res)
+
+# from re import search,sub
+# fs=sub('.*/','',search(r"telephone-event/([0-9])\w+",packet.sip.msg_hdr))

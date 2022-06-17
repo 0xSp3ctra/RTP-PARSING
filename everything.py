@@ -106,4 +106,3 @@ CID = f"ID du call : {CID}\n"
 call_infos = open('infos_call.txt', 'w')
 for id in CID:
     call_infos.write(id)
-
