@@ -5,8 +5,6 @@ from os import system
 from re import search
 from datetime import datetime
 
-
-
 # BLACK
 # PRE-COMMIT
 # https://pypi.org/project/g711/
@@ -125,7 +123,3 @@ if PileAssignment and all(list(a.list for a in PileAssignment.values())):
             if search(r"^(?:25[0-5]|2[0-4]\d|[0-1]?\d{1,2})(?:\.(?:25[0-5]|2[0-4]\d|[0-1]?\d{1,2})){3}.*",item).group().split('/')[1]:remove(item)
 
 with open('infos_call.txt', 'w') as f:f.write("{} --> {}\nDate de début : {: >}\nDate de fin :   {: >}\nCall ID :       {}".format(SIP1,SIP2,start,end,CID))
-if item.endswith(".g711u") or len(item.split('.'))==5:remove(item)
-
-with open('infos_call.txt', 'w') as f:
-    f.write("Date de début : {: >}\nDate de fin :   {: >}\nCall ID :       {}".format(start,end,CID))
