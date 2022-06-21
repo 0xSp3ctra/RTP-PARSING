@@ -74,12 +74,16 @@ Created by Breee and Spectra
 ░  ░  ░  ░░       ▒ ▒ ░░     ░          ░   ▒     ░ ░     ░ ░   
       ░           ░ ░        ░ ░            ░  ░    ░  ░    ░  ░
                   ░ ░        ░                                  
-'''
-)
+''')
 
+k = interfaces()
+print(k)
+interface = str(input("Saisissez l'interface d'écoute : "))
+while interface not in k:
+    print(k)
+    interface = str(input("Saisissez une interface valide : "))
 
-print(interfaces)
-capture = LiveCapture(interface=input("Nom de l'interface: "), display_filter='sip or rtp')
+capture = LiveCapture(interface=interface, display_filter='sip or rtp')
 print("[+] Démarrage du sniffing...")
 time.sleep(2)
 print("[+] Démarrage du parsing...")
