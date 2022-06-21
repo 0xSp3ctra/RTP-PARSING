@@ -4,6 +4,7 @@ from console import getTerminalSize
 from os import system
 from re import search
 from datetime import datetime
+import time
 
 # BLACK
 # PRE-COMMIT
@@ -79,6 +80,9 @@ Created by Breee and Spectra
 
 print(interfaces)
 capture = LiveCapture(interface=input("Nom de l'interface: "), display_filter='sip or rtp')
+print("[+] Démarrage du sniffing...")
+time.sleep(2)
+print("[+] Démarrage du parsing...")
 # print(capture.set_debug())
 format='%d/%m/%Y %H:%M:%S'
 start=datetime.now().strftime(format)
