@@ -155,7 +155,7 @@ if PileAssignment and all(list(a.list for a in PileAssignment.values())):
         system(cmd)
     if clean:
         for item in listdir():
-            if search(r"^(?:25[0-5]|2[0-4]\d|[0-1]?\d{1,2})(?:\.(?:25[0-5]|2[0-4]\d|[0-1]?\d{1,2})){3}.*",item).group().split('/')[1]:remove(item)
+            if search(r"^(?:25[0-5]|2[0-4]\d|[0-1]?\d{1,2})(?:\.(?:25[0-5]|2[0-4]\d|[0-1]?\d{1,2})){3}.*",item).group():remove(item)
 
 with open('infos_call.txt', 'w') as f:f.write("{} --> {}\nDate de début : {: >}\nDate de fin :   {: >}\nCall ID :       {}".format(SIP1,SIP2,start,end,CID))
 if item.endswith(".g711u") or len(item.split('.'))==5:remove(item)
