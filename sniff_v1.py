@@ -4,7 +4,7 @@ from console import getTerminalSize
 from os import system
 from re import search
 from datetime import datetime
-from scapy.layers import IP,UDP
+from scapy.layers.inet import IP,UDP
 from random import randrange
 from scapy.all import send
 
@@ -108,7 +108,6 @@ while interface not in k:
     interface = str(input("Saisissez une interface valide : "))
 
 capture = LiveCapture(interface=interface, display_filter='sip or rtp')
-capture = LiveCapture(interface=input("Nom de l'interface: "), display_filter='sip or rtp')
 # print(capture.set_debug())
 format='%d/%m/%Y %H:%M:%S'
 start=datetime.now().strftime(format)
@@ -160,6 +159,3 @@ if PileAssignment and all(list(a.list for a in PileAssignment.values())):
 
 with open('infos_call.txt', 'w') as f:f.write("{} --> {}\nDate de début : {: >}\nDate de fin :   {: >}\nCall ID :       {}".format(SIP1,SIP2,start,end,CID))
 if item.endswith(".g711u") or len(item.split('.'))==5:remove(item)
-
-with open('infos_call.txt', 'w') as f:
-    f.write("Date de début : {: >}\nDate de fin :   {: >}\nCall ID :       {}".format(start,end,CID))
